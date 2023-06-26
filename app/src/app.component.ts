@@ -3,6 +3,7 @@ import { CalendarOptions, Calendar, EventClickArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { DateClickArg, EventDragStopArg } from '@fullcalendar/interaction';
 import { FullCalendarComponent } from '@fullcalendar/angular';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,9 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  events: any[] = [];
 
+  constructor(private http:HttpClient) {}
   calendarOptions?: CalendarOptions;
   eventsModel: any;
   @ViewChild('fullcalendar') fullcalendar?: FullCalendarComponent;
@@ -18,14 +21,21 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     // need for load calendar bundle first
     forwardRef(() => Calendar);
+    this.http.get('http://localhost/events.php').subscribe(data => {
+      this.events.push(data);
+      console.log(this.events);
+      
+ });
+ 
+ 
 
     this.calendarOptions = {
       plugins: [dayGridPlugin, interactionPlugin],
       editable: true,
       customButtons: {
         myCustomButton: {
-          text: 'custom!',
-          click: function () {
+          text: 'custom!',// הטקסט שיוצג על הכפתור עצמו 
+          click: function () {//פונקציית התקשרות חוזרת הנקראת בלחיצה על
             alert('clicked the custom button!');
           }
         }
@@ -72,4 +82,8 @@ export class AppComponent implements OnInit {
     }];
   }
 
+  
+
 }
+
+  
